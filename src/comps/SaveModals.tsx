@@ -13,7 +13,8 @@ export default function SaveModals() {
 
   useEffect(() => {
     setLoading(true);
-    axios.get(`${apiUrl}/api/share_links`).then((response) => {
+    axios.get(`${apiUrl}/api/share_links`)
+      .then((response) => {
       shareLinks.current = response.data;
       setLoading(false);
     });

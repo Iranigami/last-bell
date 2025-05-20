@@ -27,7 +27,7 @@ export default function Waiting() {
     const expiryTimestamp = time;
     const { seconds } = useTimer({
       expiryTimestamp,
-      onExpire: () => {},
+      onExpire: () => {navigate("/")},
     });
 
     return (
@@ -43,7 +43,7 @@ export default function Waiting() {
   return (
     <>
       {isUserInactive && (
-        <div className="fixed w-[1347px] h-[910px] top-[1487.5px] left-[407px] rounded-[64px] py-[128px] px-[64px] bg-white shadow-[24px_16px_24px_0px_#2D374426]">
+        <div className="z-[1000] fixed w-[1347px] h-[910px] top-[1487.5px] left-[407px] rounded-[64px] py-[128px] px-[64px] bg-white shadow-[0px_16px_24px_30px_#2D374426]">
           <img src={err} alt="error" className="size-[156px] mx-auto" />
           <div className="mt-[64px] text-black-primary text-[80px] tracking-0 leading-[100%] uppercase text-center font-bold font-europe mb-[32px]">
             Хотите продолжить?

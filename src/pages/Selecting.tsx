@@ -22,10 +22,16 @@ export default function Selecting() {
       setCharacterList(response.data);
       setLoading(false);
       setOpenedModal("character");
+    })
+    .catch((error)=>{
+      navigate(`/error?error=${error.message}`)
     });
     axios.get(`${apiUrl}/api/backgrounds`).then((response) => {
       setBackgroundList(response.data);
       setLoading(false);
+    })
+    .catch((error)=>{
+      navigate(`/error?error=${error.message}`)
     });
     setTimeout(() => setImageLoading(false), 200);
   }, []);
