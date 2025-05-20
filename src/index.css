@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  --font-montserrat: "Montserrat";
+  --font-europe: "EuropeExt";
+  --font-tt: "TTNorms";
+  --color-blue-accent: #26AFF0;
+  --color-black-primary: #2D3744;
+  --color-black-tertiary: #8696A9;
+  --color-black-secondary: #58687C;
+  --animate-float: float 1s ease-in-out infinite;
+  @keyframes float {
+    0%,
+    100% {
+      transform: rotate(-7deg);
+      scale: 100%;
+    }
+    50% {
+      transform: rotate(7deg);
+      scale: 90%;
+    }
+  }
+}
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+@layer base {
+  @font-face {
+    font-family: EuropeExt;
+
+    src: url(./assets/fonts/12749.otf) format("opentype");
+  }
+  @font-face {
+    font-family: Montserrat;
+    font-weight: 400;
+    src: url(./assets/fonts/Montserrat-Regular.ttf);
+  }
+  @font-face {
+    font-family: Montserrat;
+    font-weight: 500;
+    src: url(./assets/fonts/Montserrat-Medium.ttf);
+  }
+  @font-face {
+    font-family: TTNorms;
+    font-weight: 400;
+    src: url(./assets/fonts/TTNorms-Regular.otf);
+  }
+  @font-face {
+    font-family: TTNorms;
+    font-weight: 700;
+    src: url(./assets/fonts/TTNorms-Bold.otf);
+  }
+}
+
+.countdown-container {
+  position: relative;
+}
+.circle {
+  animation-duration: 2s;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+@keyframes scaleUp {
+  0% {
+    transform: scale(20%);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(100%);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes moveUp {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-800px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-800px);
+    opacity: 0;
+  }
+}
+
+.hide-scroll {
+  scroll-behavior: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
