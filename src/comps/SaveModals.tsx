@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import type { ShareLink } from "../Types";
 import { useNavigate, useSearchParams } from "react-router-dom";
