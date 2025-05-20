@@ -10,10 +10,19 @@ export default function SaveModals() {
   const [loading, setLoading] = useState(true);
   const apiUrl = import.meta.env.VITE_API_URL;
   const shareLinks = useRef<ShareLink[]>([]);
-
+  const data = {
+      "imageResults": [
+        photoId
+      ]
+    };
   useEffect(() => {
     setLoading(true);
-    axios.get(`${apiUrl}/api/share_links`)
+    axios.post(`${apiUrl}/api/image_results/telegram_qr`, data, {
+      headers: {
+        "Content-Type": "application/json",
+        accept: "application/json",
+      },
+    })
       .then((response) => {
       shareLinks.current = response.data;
       setLoading(false);
