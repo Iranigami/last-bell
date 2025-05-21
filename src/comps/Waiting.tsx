@@ -27,7 +27,9 @@ export default function Waiting() {
     const expiryTimestamp = time;
     const { seconds } = useTimer({
       expiryTimestamp,
-      onExpire: () => {navigate("/")},
+      onExpire: () => {
+        navigate("/");
+      },
     });
 
     return (

@@ -1,10 +1,10 @@
-import { useCallback, useRef, useState } from "react";
-import type { VariantData } from "../Types";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Tag, VariantData } from "../Types";
 import next from "../assets/images/icons/arr.svg";
 import back from "../assets/images/icons/blue arr.svg";
 import selectedIcon from "../assets/images/icons/selected.svg";
 import arrRight from "../assets/images/icons/next arr.svg";
-import up from "../assets/images/icons/up.svg"
+import up from "../assets/images/icons/up.svg";
 import { useNavigate } from "react-router-dom";
 type Props = {
   data: VariantData[];
@@ -35,6 +35,10 @@ export default function SelectModal({
   const maxPages = data.length / 3;
   const scrollable = document.getElementById("scrollable");
   const [isLoading] = useState(false);
+  useEffect(() => {
+    if(document.getElementById("descHandler") && data[selected])
+       document.getElementById("descHandler")!.innerHTML = data[selected].description;
+  }, [selected]);
   const lastItemRef = useCallback(
     (node: any) => {
       if (isLoading) return;
@@ -75,13 +79,23 @@ export default function SelectModal({
   );
   return (
     <div
-      className={`duration-150 ${isModalDowned && "translate-y-[1600px]"} w-full bottom-0 pt-[112px] pb-[128px] bg-white fixed gap-[64px] rounded-t-[136px] px-[64px] ${texts[2] ? "h-[1492px]" : "h-[1882px]"}`}
+      className={`duration-150 ${isModalDowned && !texts[2] && `translate-y-[1600px]`} ${isModalDowned && !!texts[2] && `translate-y-[1200px]`} w-full bottom-0 pt-[112px] pb-[128px] bg-white fixed gap-[64px] rounded-t-[136px] px-[64px] ${texts[2] ? "h-[1492px]" : "h-[1692px]"}`}
     >
-      <div 
+      <div
         onTouchStart={() => setModalDowned(!isModalDowned)}
-        className="absolute w-full h-[43px] top-[64px] left-0 right-0 mx-auto flex justify-center items-start">
-        <img hidden={!isModalDowned} src={up} alt="open menu" />
-        <div hidden={isModalDowned} className="w-[160px] h-[16px] rounded-full bg-[#2D3744]"/>
+        className="absolute w-full h-[107px] top-0 left-0 right-0 mx-auto flex justify-center pt-[64px]"
+      >
+        <img
+          onTouchStart={() => setModalDowned(!isModalDowned)}
+          hidden={!isModalDowned}
+          src={up}
+          alt="open menu"
+        />
+        <div
+          onTouchStart={() => setModalDowned(!isModalDowned)}
+          hidden={isModalDowned}
+          className="w-[160px] h-[16px] rounded-full bg-[#2D3744]"
+        />
       </div>
       <div className="text-black-primary text-[80px] tracking-0 leading-[100%] uppercase text-left font-bold font-europe">
         {texts[0]}
@@ -136,7 +150,7 @@ export default function SelectModal({
               <img
                 src={apiUrl + variant.image}
                 alt=""
-                className={`${texts[2] ? "absolute top-0 h-full w-full mx-auto left-0 right-0" : "h-[830px] mt-[32px] ml-[15%]"}`}
+                className={`${texts[2] ? "absolute top-0 h-full w-full mx-auto left-0 right-0" : "h-[831px] mx-auto left-0 right-0 object-contain absolute mt-[32px]"}`}
               />
             </div>
           </div>
@@ -147,9 +161,13 @@ export default function SelectModal({
         <div hidden={!!texts[2]}>
           <div className="mt-[64px] font-europe font-bold text-[64px] leading-[100%] tracking-0 text-black-primary uppercase">
             {data[selected].title}
-          </div>
-          <div className="mt-[32px] font-tt font-normal text-[40px] leading-[100%] tracking-0 text-black-secondary">
-            {data[selected].description}
+            <div className="tagWrapper">
+            {data[selected].tags && data[selected].tags.map((tag: Tag, index: number) => (
+              <div key={index} className="tag">
+                {tag.text}
+              </div>
+            ))}
+            </div>          
           </div>
         </div>
       )}
@@ -167,12 +185,12 @@ export default function SelectModal({
           hidden={!texts[2]}
           className="absolute w-[378px] h-[146px] border-[4px] border-blue-accent rounded-[72px] fixed left-[64px] gap-[24px] font-tt font-bold text-[48px] leading-[100%] tracking-0 flex justify-center items-center text-blue-accent"
         >
-          <img src={back} alt="back" className="size-[48px] rotate-180" />
+          <img src={back} alt="back" className="size-[48px]" />
           {texts[2]}
         </button>
         <div className="w-[520px] flex gap-[16px] font-tt font-normal leading-[100%] tracking-0 text-[40px] text-black-secondary">
           {texts[1]}
-          <img src={next} alt="next step" className="size-[48px]" />
+          <img src={next} alt="next step" className="size-[48px]" />  
         </div>
         <button
           onClick={onNext}

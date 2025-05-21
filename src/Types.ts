@@ -3,11 +3,12 @@ export interface VariantData {
   image: string;
   title: string;
   description: string;
+  tags: [
+    Tag
+  ]
 }
 
-export interface ShareLink {
+export interface Tag {
   id: number;
-  tag: string;
-  image: string;
-  url: string;
+  text: string;
 }

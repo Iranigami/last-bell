@@ -18,21 +18,25 @@ export default function Selecting() {
   const [imageLoading, setImageLoading] = useState(true);
   useEffect(() => {
     setLoading(true);
-    axios.get(`${apiUrl}/api/costumes`).then((response) => {
-      setCharacterList(response.data);
-      setLoading(false);
-      setOpenedModal("character");
-    })
-    .catch((error)=>{
-      navigate(`/error?error=${error.message}`)
-    });
-    axios.get(`${apiUrl}/api/backgrounds`).then((response) => {
-      setBackgroundList(response.data);
-      setLoading(false);
-    })
-    .catch((error)=>{
-      navigate(`/error?error=${error.message}`)
-    });
+    axios
+      .get(`${apiUrl}/api/costumes`)
+      .then((response) => {
+        setCharacterList(response.data);
+        setLoading(false);
+        setOpenedModal("character");
+      })
+      .catch((error) => {
+        navigate(`/error?error=${error.message}`);
+      });
+    axios
+      .get(`${apiUrl}/api/backgrounds`)
+      .then((response) => {
+        setBackgroundList(response.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        navigate(`/error?error=${error.message}`);
+      });
     setTimeout(() => setImageLoading(false), 200);
   }, []);
   return (
@@ -46,7 +50,7 @@ export default function Selecting() {
               alt="background"
               className="absolute w-full h-full"
             />
-            <div className="top-[250px] fixed text-white font-europe font-bold text-[200px] leading-[100%] tracking-[8px] text-center uppercase drop-shadow-2xl">
+            <div className="top-[250px] fixed text-white font-europe font-bold text-[200px] leading-[100%] tracking-[8px] text-center mx-auto left-0 right-0 uppercase drop-shadow-2xl">
               {characterList[selectedCharacter].title}
             </div>
             <img
