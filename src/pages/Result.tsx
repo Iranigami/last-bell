@@ -6,75 +6,38 @@ import SaveModals from "../comps/SaveModals";
 import axios from "axios";
 import Waiting from "../comps/Waiting";
 import Description from "../comps/Description";
-import html2canvas from "html2canvas";
+import React from "react";
+import { toBlob } from "html-to-image";
+import test from "../assets/images/female-dentist-with-dentistry-tools-isolated 1 1.webp"
 
-export default function Result() {
+type Props = {
+  savedFile?: Blob;
+}
+
+
+export default function Result({savedFile}: Props) {
   const [isPhotoLoading, setPhotoLoading] = useState(true);
   const [isErrorModalOpen, setErrorModalOpen] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
   const [isSaveModalsOpen, setSaveModalsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [bg, setBg] = useState("");
   const [searchParams] = useSearchParams();
-  const imageRef = useRef<any>(null);
-
-  const captureAndConvertToFile = async (): Promise<File | null> => {
-    if (!imageRef.current) return null;
-    var myCanvas: HTMLCanvasElement | undefined = undefined;
-      html2canvas(imageRef.current).then((canvas) => {
-        myCanvas = canvas;
-      });
-
-    return new Promise((resolve) => {
-      myCanvas!.toBlob(
-        (blob) => {
-          if (!blob) {
-            resolve(null);
-            return;
-          }
-          const file = new File([blob], "screenshot.jpg", {
-            type: "image/jpeg",
-            lastModified: Date.now(),
-          });
-
-          resolve(file);
-        },
-        "image/jpeg",
-        0.9,
-      );
-    });
-  };
-
-  const capture = useCallback(async () => {
-    setLoading(true);
-    const file = await captureAndConvertToFile();
-    if (file) {
-      const data = {
-        imageWithDescription: file,
-        imageResultId: searchParams.get("id"),
-      };
-      console.log(data);
-      axios
-        .post(`${apiUrl}/api/image_results/update-image`, data, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            accept: "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error.data);
-        });
-    } else {
-      console.error("Не удалось создать файл");
-    }
-  }, [imageRef]);
+  const ref = useRef<HTMLDivElement>(null);
+  console.log(savedFile);
 
   useEffect(() => {
     if (searchParams.get("error")) setErrorModalOpen(true);
+    if (searchParams.get("swap") === "false") 
+    {
+      if (savedFile)
+      {
+        const imgUrl = URL.createObjectURL(savedFile!);
+        setBg(imgUrl);
+        setPhotoLoading(false);
+      }
+    }
+    else {
     if (searchParams.get("id"))
       axios
         .get(`${apiUrl}/api/image_results/${searchParams.get("id")}`)
@@ -82,13 +45,61 @@ export default function Result() {
           setBg(apiUrl + response.data.image);
           setPhotoLoading(false);
         });
+      }
   }, []);
+
+  async function getImageAsBlob(imageUrl: string) {
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Ошибка при загрузке изображения: ${response.status}`);
+      }
+      const blob = await response.blob();
+      console.log(blob);
+      return blob;
+    } catch (error) {
+      console.error('Ошибка:', error);
+      return null;
+    }
+  }
+  
+  const capture = useCallback(() => {
+    if (ref.current === null) {
+      return
+    }
+
+    toBlob(ref.current, { cacheBust: true, })
+      .then((file) => {
+        const data = {
+            imageResultId: searchParams.get("id"),
+            imageWithDescription: file
+          };
+        axios
+        .post(`https://api.fitting-room-lastbell.test.itlabs.top/api/image_results/update-image`, data, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            accept: "multipart/form-data",
+          },
+        })
+        .then(() => {
+            console.log("Success");
+        })
+        .catch(() => {
+          console.error("Не удалось обновить фото");
+        });
+
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [ref])
+
   return (
     <div className="w-[100vw] h-[100vh] top-0 fixed overflow-hidden">
       {!isPhotoLoading && (
-        <div ref={imageRef}>
-        <img src={bg} alt="" className="object-cover h-[100vh] absolute z-[-1] top-0 bottom-0 my-auto" />
-        {isSaveModalsOpen && <Description />}
+        <div ref={ref} className="w-[100vw] h-[100vh]">
+        <img src={bg} alt="" className={`absolute top-0 bottom-0 my-auto ${searchParams.get("swap") === "false" ? "rotate-270 scale-[230%] top-[-1500px]" : "h-[100vh] object-cover"}`} />
+        {isSaveModalsOpen && <Description/>}
         </div>
       )}
       {!isPhotoLoading && !isSaveModalsOpen && (
@@ -107,7 +118,7 @@ export default function Result() {
             Попробовать еще раз
           </button>
           <button
-            onClick={() => {setSaveModalsOpen(true); capture();}}
+            onClick={() => {setSaveModalsOpen(true); setTimeout(() => getImageAsBlob("http://api.fitting-room-lastbell.test.itlabs.top/images/background/image-2-682d756beb502303276019.webp"), 2000);}}
             className="w-[714px] h-[154px] rounded-[72px] flex justify-center items-center bg-blue-accent text-white ml-[32px]"
           >
             Получить фотографию

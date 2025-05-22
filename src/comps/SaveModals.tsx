@@ -6,6 +6,7 @@ export default function SaveModals() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const photoId = [`${searchParams.get("id")}`];
+  const code = searchParams.get("code");
   const [loading, setLoading] = useState(true);
   const [isHintVisible, setHintVisible] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL;
@@ -48,10 +49,10 @@ export default function SaveModals() {
           Не получается сканировать qr-код?
       </div>
       <div hidden={!isHintVisible} className="font-tt text-[40px] leading-[130%] text-center text-black-secondary font-normal tracking-[0.8px] mt-[80px]">
-        Наберите в поиске <span className="font-bold">@faceswapitl</span>, затем
-        отправьте сообщение “<span className="font-bold">{photoId}</span>”,
-        <br />
-        вам <span className="font-bold">ответит</span> бот и{" "}
+        Наберите в поиске <span className="font-bold">@ITLabs_LastBellBot</span>, затем нажмите       
+        <br /> кнопку "Start" и
+        отправьте сообщение “<span className="font-bold">{code}</span>”,
+        вам <span className="font-bold">ответит</span> бот<br/> и{" "}
         <span className="font-bold">пришлет</span> вашу фотографию
       </div>
       <button

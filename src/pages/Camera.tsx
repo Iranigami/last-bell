@@ -9,7 +9,12 @@ import LoadingModal from "../comps/LoadingModal";
 import Countdown from "../comps/Countdown";
 import Waiting from "../comps/Waiting";
 
-export default function Camera() {
+type Props = {
+  onSaveFile: (file: File) => void;
+}
+
+
+export default function Camera({onSaveFile}: Props) {
   const [isCountdownShown, setCountdownShown] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -59,6 +64,8 @@ export default function Camera() {
     setLoading(true);
     const file = await captureAndConvertToFile();
     if (file) {
+      if (searchParams.get("swap")==="false") 
+        onSaveFile(file);
       const data = {
         userImage: file,
         costumeId: searchParams.get("character"),
@@ -74,7 +81,7 @@ export default function Camera() {
         })
         .then((response) => {
           console.log(response.data);
-          navigate(`/result?id=${response.data.id}`);
+          navigate(`/result?id=${response.data.id}&char=${searchParams.get("character")}&code=${response.data.code}&swap=${searchParams.get("swap")}`);
         })
         .catch((error) => {
           console.log(error.data);

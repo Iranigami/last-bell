@@ -6,6 +6,7 @@ export interface VariantData {
   tags: [
     Tag
   ]
+  enableSwap: boolean;
 }
 
 export interface Tag {

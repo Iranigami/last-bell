@@ -80,9 +80,11 @@ export default function Selecting() {
               setOpenedModal("character");
             }}
             onNext={() =>
-              navigate(
-                `/camera?character=${selectedCharacter + 1}&background=${selectedBackground + 1}`,
-              )
+              {
+                navigate(
+                  `/camera?character=${selectedCharacter + 1}&background=${selectedBackground + 1}&swap=${characterList[selectedCharacter].enableSwap}`,
+                )
+              }
             }
           />
         )}
