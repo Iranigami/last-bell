@@ -23,16 +23,17 @@ export default function Result({savedFile}: Props) {
   const navigate = useNavigate();
   const [bg, setBg] = useState("");
   const [searchParams] = useSearchParams();
+  let myBlobReference;
   const ref = useRef<HTMLDivElement>(null);
-  console.log(savedFile);
-
+  let imgUrl: string;
   useEffect(() => {
     if (searchParams.get("error")) setErrorModalOpen(true);
     if (searchParams.get("swap") === "false") 
     {
       if (savedFile)
       {
-        const imgUrl = URL.createObjectURL(savedFile!);
+        myBlobReference = savedFile;
+        imgUrl = URL.createObjectURL(myBlobReference);
         setBg(imgUrl);
         setPhotoLoading(false);
       }
@@ -42,26 +43,14 @@ export default function Result({savedFile}: Props) {
       axios
         .get(`${apiUrl}/api/image_results/${searchParams.get("id")}`)
         .then((response) => {
-          setBg(apiUrl + response.data.image);
+          setBg(`http://localhost:4000/proxy?url=${apiUrl}${response.data.image}`);
+          console.log(response.data.image)
           setPhotoLoading(false);
         });
       }
   }, []);
 
-  async function getImageAsBlob(imageUrl: string) {
-    try {
-      const response = await fetch(imageUrl);
-      if (!response.ok) {
-        throw new Error(`Ошибка при загрузке изображения: ${response.status}`);
-      }
-      const blob = await response.blob();
-      console.log(blob);
-      return blob;
-    } catch (error) {
-      console.error('Ошибка:', error);
-      return null;
-    }
-  }
+
   
   const capture = useCallback(() => {
     if (ref.current === null) {
@@ -83,6 +72,8 @@ export default function Result({savedFile}: Props) {
         })
         .then(() => {
             console.log("Success");
+            URL.revokeObjectURL(imgUrl);
+            myBlobReference = null;
         })
         .catch(() => {
           console.error("Не удалось обновить фото");
@@ -104,12 +95,12 @@ export default function Result({savedFile}: Props) {
       )}
       {!isPhotoLoading && !isSaveModalsOpen && (
         <div className="fixed bottom-0 w-full h-[346px] bg-white rounded-t-[136px] flex justify-center items-center font-tt font-bold text-[48px]">
-          <button
-            onClick={() => navigate("/")}
+          <a
+            href="/"
             className="w-[425px] h-[154px] rounded-[72px] flex justify-center items-center bg-blue-accent text-white"
           >
             На главную
-          </button>
+          </a>
           <button
             onClick={() => navigate(-1)}
             className="w-[748px] h-[154px] rounded-[72px] flex justify-center items-center border-6 border-blue-accent text-blue-accent ml-[113px] gap-[24px]"
@@ -118,7 +109,7 @@ export default function Result({savedFile}: Props) {
             Попробовать еще раз
           </button>
           <button
-            onClick={() => {setSaveModalsOpen(true); setTimeout(() => getImageAsBlob("http://api.fitting-room-lastbell.test.itlabs.top/images/background/image-2-682d756beb502303276019.webp"), 2000);}}
+            onClick={() => {setSaveModalsOpen(true); setTimeout(() => capture(), 2000);}}
             className="w-[714px] h-[154px] rounded-[72px] flex justify-center items-center bg-blue-accent text-white ml-[32px]"
           >
             Получить фотографию

@@ -55,12 +55,12 @@ export default function SaveModals() {
         вам <span className="font-bold">ответит</span> бот<br/> и{" "}
         <span className="font-bold">пришлет</span> вашу фотографию
       </div>
-      <button
-        onClick={() => navigate("/")}
+      <a
+        href="/"
         className="mb-[80px] mt-[80px] w-[425px] h-[154px] rounded-[72px] bg-blue-accent flex justify-center items-center text-white font-tt font-bold text-[48px] leading-[120%] mx-auto"
       >
         На главную
-      </button>
+      </a>
     </div>
   );
 }
